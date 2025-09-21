@@ -1,139 +1,141 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Glass Scientific Calculator — sai_x</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator — made by sai_x with ❤️‍🔥</title>
   <style>
-    :root{
-      --bg:#0e1523; --panel:rgba(255,255,255,0.07); --accent:#f97316; --muted:#b1b7c4;
-      --btn:rgba(255,255,255,0.08); --btn-hover:rgba(255,255,255,0.15);
-      --radius:16px; --gap:14px;
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: "Poppins", sans-serif;
     }
-    *{box-sizing:border-box;transition:all .18s ease}
-    html,body{height:100%;margin:0;font-family:'Segoe UI',Inter,Roboto,sans-serif;}
-    body{background:linear-gradient(135deg,#0b1221,#121b2e);display:flex;align-items:center;justify-content:center;padding:20px;color:white;overflow:hidden}
-
-    .calculator{
-      width:420px; max-width:96vw; border-radius:var(--radius);
-      background:var(--panel); padding:24px;
-      box-shadow:0 18px 45px rgba(0,0,0,0.65);
-      backdrop-filter:blur(18px) saturate(180%);
-      display:flex; flex-direction:column; gap:18px;
-      border:1px solid rgba(255,255,255,0.08);
+    .calculator {
+      width: 350px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      color: white;
     }
-
-    .screen{
-      background:rgba(255,255,255,0.05); padding:22px; border-radius:var(--radius);
-      display:flex; flex-direction:column; gap:12px;
-      box-shadow:inset 0 0 15px rgba(0,0,0,0.35);
-      backdrop-filter:blur(12px);
+    .display {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: right;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      overflow-x: auto;
     }
-    .toprow{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
-    .expr{font-size:17px;color:var(--muted);min-height:24px;word-wrap:break-word}
-    .output{font-size:34px;font-weight:700;text-align:right;letter-spacing:0.5px;color:#fff}
-
-    .kbd{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--gap)}
-    button.key{
-      background:var(--btn);border:0;padding:16px;border-radius:var(--radius);
-      color:#eaf0f9;font-weight:600;font-size:16px;cursor:pointer;position:relative;
-      overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,0.35);
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
     }
-    button.key:hover{background:var(--btn-hover);transform:translateY(-2px)}
-    button.key:active{transform:scale(0.96)}
-    button.op{background:linear-gradient(145deg,rgba(255,255,255,0.1),rgba(255,255,255,0.05));color:var(--accent)}
-    button.wide{grid-column:span 2}
-    .secondary{font-size:12px;color:var(--muted)}
-
-    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:4px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:var(--muted)}
-    .brand{font-weight:700;color:var(--accent)}
-
-    @media(max-width:460px){
-      .kbd{grid-template-columns:repeat(5,1fr)}
-      button.key{padding:13px;font-size:14px}
+    button {
+      padding: 18px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: white;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-
-    /* ripple effect */
-    button.key::after{
-      content:'';position:absolute;border-radius:50%;width:0;height:0;
-      background:rgba(255,255,255,0.25);transform:scale(0);opacity:0;
-      pointer-events:none;transition:all .4s ease;
+    button:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
     }
-    button.key:active::after{
-      width:200%;height:200%;top:50%;left:50%;transform:translate(-50%,-50%) scale(1);
-      opacity:1;transition:0s;
+    button:active {
+      transform: scale(0.95);
+    }
+    .span-two {
+      grid-column: span 2;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.8rem;
+      opacity: 0.7;
     }
   </style>
 </head>
 <body>
   <div class="calculator">
-    <div class="screen">
-      <div class="toprow">
-        <div class="secondary">Mode: <span id="modeLabel">RAD</span></div>
-        <div class="secondary">Memory: <span id="memLabel">0</span></div>
-      </div>
-      <div id="expr" class="expr"></div>
-      <div id="out" class="output">0</div>
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+      <button onclick="clearDisplay()">AC</button>
+      <button onclick="deleteChar()">DEL</button>
+      <button onclick="append('(')">(</button>
+      <button onclick="append(')')">)</button>
+
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button onclick="append('/')">÷</button>
+
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button onclick="append('*')">×</button>
+
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button onclick="append('-')">−</button>
+
+      <button onclick="append('0')">0</button>
+      <button onclick="append('.')">.</button>
+      <button onclick="calculate()" class="span-two">=</button>
+      <button onclick="append('+')">+</button>
+
+      <button onclick="append('Math.sin(')">sin</button>
+      <button onclick="append('Math.cos(')">cos</button>
+      <button onclick="append('Math.tan(')">tan</button>
+      <button onclick="append('Math.log10(')">log</button>
+
+      <button onclick="append('Math.sqrt(')">√</button>
+      <button onclick="append('**')">^</button>
+      <button onclick="append('Math.PI')">π</button>
+      <button onclick="append('Math.E')">e</button>
     </div>
-
-    <div class="kbd" id="keys">
-      <button class="key" data-action="clear">C</button>
-      <button class="key" data-action="back">⌫</button>
-      <button class="key" data-action="paren">( )</button>
-      <button class="key" data-val="%">%</button>
-      <button class="key op" data-action="toggle">DEG</button>
-      <button class="key op" data-action="inv">INV</button>
-
-      <button class="key" data-val="7">7</button>
-      <button class="key" data-val="8">8</button>
-      <button class="key" data-val="9">9</button>
-      <button class="key op" data-val="/">÷</button>
-      <button class="key" data-action="sqrt">√</button>
-      <button class="key" data-action="pow">xʸ</button>
-
-      <button class="key" data-val="4">4</button>
-      <button class="key" data-val="5">5</button>
-      <button class="key" data-val="6">6</button>
-      <button class="key op" data-val="*">×</button>
-      <button class="key" data-action="fact">n!</button>
-      <button class="key" data-action="pi">π</button>
-
-      <button class="key" data-val="1">1</button>
-      <button class="key" data-val="2">2</button>
-      <button class="key" data-val="3">3</button>
-      <button class="key op" data-val="-">−</button>
-      <button class="key" data-action="ln">ln</button>
-      <button class="key" data-action="log">log</button>
-
-      <button class="key" data-val="0">0</button>
-      <button class="key" data-val=".">.</button>
-      <button class="key" data-action="plusminus">±</button>
-      <button class="key op" data-val="+">+</button>
-      <button class="key" data-action="sin">sin</button>
-      <button class="key" data-action="cos">cos</button>
-
-      <button class="key" data-action="tan">tan</button>
-      <button class="key" data-action="asin">asin</button>
-      <button class="key" data-action="acos">acos</button>
-      <button class="key" data-action="atan">atan</button>
-      <button class="key" data-action="ans">ANS</button>
-      <button class="key wide op" data-action="equals">=</button>
-
-      <button class="key wide" data-action="mplus">M+</button>
-      <button class="key" data-action="mminus">M-</button>
-      <button class="key" data-action="mr">MR</button>
-      <button class="key" data-action="mc">MC</button>
-    </div>
-
-    <div class="footer">
-      <div class="secondary">Minimal • Advanced • Glass UI</div>
-      <div class="brand">made by sai_x with love ❤️‍🔥</div>
-    </div>
+    <div class="footer">Made by <b>sai_x</b> with ❤️‍🔥</div>
   </div>
 
-<script>
-// same script logic as earlier version
-(() => { /* ... keep same JS code from earlier ... */ })();
-</script>
+  <script>
+    const display = document.getElementById("display");
+
+    function append(value) {
+      if (display.innerText === "0") display.innerText = "";
+      display.innerText += value;
+    }
+
+    function clearDisplay() {
+      display.innerText = "0";
+    }
+
+    function deleteChar() {
+      display.innerText = display.innerText.slice(0, -1) || "0";
+    }
+
+    function calculate() {
+      try {
+        display.innerText = eval(display.innerText);
+      } catch (e) {
+        display.innerText = "Error";
+      }
+    }
+  </script>
 </body>
 </html>
